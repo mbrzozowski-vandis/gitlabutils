@@ -144,17 +144,6 @@ for newvar in newvarsjson:
         createvar(projectid,privatetoken,newvarname,newvarenv,newvarvalue,newvarprotect)
         varscreatectr = varscreatectr + 1
 
-for existingvar in currentvarsjson:
-    existingvarname = existingvar['key']
-    existingvarenv = existingvar['environment_scope']
-
-    newvarcheck = getvar(newvarsjson,existingvarname,existingvarenv)
-
-    if newvarcheck is None:
-        output = 'Env variable ' + existingvarname + ' / ' + existingvarenv + ' will be deleted.'
-        #print output
-        varsdelctr = varsdelctr + 1
-
 print 'Variables created: ' + str(varscreatectr)
 print 'Variables updated: ' + str(varsupdatectr)
 print 'Variables deleted: ' + str(varsdelctr)
