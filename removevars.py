@@ -127,28 +127,37 @@ for newvar in newvarsjson:
             if currentvar['protected'] != newvarprotect:
                 output = 'Env variable ' + newvarname + ' / ' + newvarenv + ' protection will be updated. Must delete and recreate'
                 varsupdatectr = varsupdatectr + 1
-		delete = 1
-                print output
+                #print output
                 #deletevar(projectid,privatetoken,newvarname)
                 varstoupdate.append(newvarname)
                 #updatevar(projectid,privatetoken,newvarname,newvarenv,newvarvalue,newvarprotect)
-                #varsupdatectr = varsupdatectr + 1
+                varsupdatectr = varsupdatectr + 1
             else:
                 output = 'Env variable ' + newvarname + ' / ' + newvarenv + ' needs no update.'
                 #print output
                 varsnoactionctr = varsnoactionctr + 1
         else:
-            output = 'Env variable ' + newvarname + ' / ' + newvarenv + ' will be updated.'
-            print output
+            output = 'Env variable ' + newvarname + ' / ' + newvarenv + ' will be updated. Must delete and recreate'
+            varstoupdate.append(newvarname)
+            #print output
             varsupdatectr = varsupdatectr + 1
-    else:
-#        output = 'Env variable ' + newvarname + ' / ' + newvarenv + ' will be created.'
-#        print output
-#        createvar(projectid,privatetoken,newvarname,newvarenv,newvarvalue,newvarprotect)
-        varscreatectr = varscreatectr + 1
 
-for vartoupdate in varstoupdate:
-    output = 'Env variable ' + vartoupdate + ' will be deleted'
+for existingvar in currentvarsjson:
+    existingvarname = existingvar['key']
+    existingvarenv = existingvar['environment_scope']
+
+    newvarcheck = getvar(newvarsjson,existingvarname,existingvarenv)
+
+    if newvarcheck is None:
+        output = 'Env variable ' + existingvarname + ' / ' + existingvarenv + ' will be deleted.'
+        #print output
+        #varsdelctr = varsdelctr + 1
+        varstoupdate.append(existingvarname)
+
+dedupvarstoupdate = set(varstoupdate)
+
+for vartoupdate in dedupvarstoupdate:
+    output = 'Deleting variable ' + vartoupdate
     print output
     varsdelctr = varsdelctr + 1
     deletevar(projectid,privatetoken,vartoupdate)
@@ -157,5 +166,3 @@ for vartoupdate in varstoupdate:
 #print 'Variables updated: ' + str(varsupdatectr)
 print 'Variables deleted: ' + str(varsdelctr)
 #print 'Variables no action taken ' + str(varsnoactionctr)
-            
-
