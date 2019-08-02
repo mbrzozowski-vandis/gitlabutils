@@ -101,6 +101,8 @@ varsdelctr = 0
 varssuccessctr = 0
 varserrorctr = 0
 
+delete = 0
+
 varstoupdate = []
 varstodelete = []
 
@@ -125,6 +127,7 @@ for newvar in newvarsjson:
             if currentvar['protected'] != newvarprotect:
                 output = 'Env variable ' + newvarname + ' / ' + newvarenv + ' protection will be updated. Must delete and recreate'
                 varsupdatectr = varsupdatectr + 1
+		delete = 1
                 print output
                 #deletevar(projectid,privatetoken,newvarname)
                 varstoupdate.append(newvarname)
@@ -139,25 +142,20 @@ for newvar in newvarsjson:
             print output
             varsupdatectr = varsupdatectr + 1
     else:
-        output = 'Env variable ' + newvarname + ' / ' + newvarenv + ' will be created.'
-        print output
-        createvar(projectid,privatetoken,newvarname,newvarenv,newvarvalue,newvarprotect)
+#        output = 'Env variable ' + newvarname + ' / ' + newvarenv + ' will be created.'
+#        print output
+#        createvar(projectid,privatetoken,newvarname,newvarenv,newvarvalue,newvarprotect)
         varscreatectr = varscreatectr + 1
 
-for existingvar in currentvarsjson:
-    existingvarname = existingvar['key']
-    existingvarenv = existingvar['environment_scope']
+for vartoupdate in varstoupdate:
+    output = 'Env variable ' + vartoupdate + ' will be deleted'
+    print output
+    varsdelctr = varsdelctr + 1
+    deletevar(projectid,privatetoken,vartoupdate)
 
-    newvarcheck = getvar(newvarsjson,existingvarname,existingvarenv)
-
-    if newvarcheck is None:
-        output = 'Env variable ' + existingvarname + ' / ' + existingvarenv + ' will be deleted.'
-        #print output
-        varsdelctr = varsdelctr + 1
-
-print 'Variables created: ' + str(varscreatectr)
-print 'Variables updated: ' + str(varsupdatectr)
+#print 'Variables created: ' + str(varscreatectr)
+#print 'Variables updated: ' + str(varsupdatectr)
 print 'Variables deleted: ' + str(varsdelctr)
-print 'Variables no action taken ' + str(varsnoactionctr)
+#print 'Variables no action taken ' + str(varsnoactionctr)
             
 
